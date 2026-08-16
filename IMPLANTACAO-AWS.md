@@ -1,4 +1,4 @@
-# Projeto 2 — Implantação (Dino Game + ElastiCache)
+# Implantação (Dino Game + ElastiCache) - Parte 2-3
 
 > **Pré-requisito:** Todo o Projeto 1 (Cognito, Lambda, API Gateway, S3, CloudFront) já deve estar implantado e funcionando conforme as etapas anteriores deste guia.
 
