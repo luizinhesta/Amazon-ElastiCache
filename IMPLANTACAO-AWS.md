@@ -6,7 +6,7 @@ Esta seção descreve os passos adicionais para implantar a funcionalidade do Di
 
 ---
 
-### Passo 1: Criar VPC com 2 Subnets Privadas
+## Passo 1: Criar VPC com 2 Subnets Privadas
 
 A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (que não é acessível pela internet).
 
@@ -19,7 +19,7 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
    - **Bloco CIDR IPv6**: Nenhum
 4. Clique em **Criar VPC**
 
-#### Criar Subnet Privada A
+### Criar Subnet Privada A
 
 5. No menu lateral, clique em **Sub-redes** > **Criar sub-rede**
 6. Configure:
@@ -29,7 +29,7 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
    - **Bloco CIDR IPv4 da sub-rede**: `10.20.1.0/24`
 7. Clique em **Criar sub-rede**
 
-#### Criar Subnet Privada B
+### Criar Subnet Privada B
 
 8. Repita o processo:
    - **Nome da sub-rede**: `dino-game-private-b`
@@ -48,7 +48,7 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
 
 ---
 
-### Passo 2: Criar ElastiCache Serverless para Valkey
+## Passo 2: Criar ElastiCache Serverless para Valkey
 
 1. Navegue para **Amazon ElastiCache** no Console AWS (região **us-east-1**)
 2. Clique em **Criar cache Serverless**
@@ -70,11 +70,11 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
 
 ---
 
-### Passo 3: Configurar Security Groups
+## Passo 3: Configurar Security Groups
 
 Precisamos de dois Security Groups: um para a Lambda e outro para o ElastiCache, permitindo comunicação interna na porta 6379.
 
-#### Criar Security Group da Lambda
+### Criar Security Group da Lambda
 
 1. Navegue para **VPC** > **Grupos de segurança** > **Criar grupo de segurança**
 2. Configure:
@@ -90,7 +90,7 @@ Precisamos de dois Security Groups: um para a Lambda e outro para o ElastiCache,
 
 > **⚠️ Nota sobre a regra de entrada HTTPS:** A Lambda precisa se comunicar com VPC Endpoints de interface (Logs) via porta 443. Como o endpoint usa o mesmo SG, a regra de ingress com origem no próprio SG permite essa comunicação.
 
-#### Criar Security Group do ElastiCache
+### Criar Security Group do ElastiCache
 
 6. Crie outro grupo de segurança:
    - **Nome**: `dino-game-elasticache-sg`
@@ -101,7 +101,7 @@ Precisamos de dois Security Groups: um para a Lambda e outro para o ElastiCache,
 8. **Regras de saída (Outbound)**: manter padrão (todo tráfego permitido)
 9. Clique em **Criar grupo de segurança**
 
-#### Associar Security Group ao ElastiCache
+### Associar Security Group ao ElastiCache
 
 10. Navegue para **ElastiCache** > selecione o cache `dino-game-cache`
 11. Em **Rede e segurança**, verifique/edite o Security Group para usar `dino-game-elasticache-sg`
@@ -111,7 +111,7 @@ Precisamos de dois Security Groups: um para a Lambda e outro para o ElastiCache,
 
 ---
 
-### Passo 4: Criar VPC Endpoint para CloudWatch Logs
+## Passo 4: Criar VPC Endpoint para CloudWatch Logs
 
 Como a Lambda está em subnets privadas sem acesso à internet, ela precisa de um VPC Endpoint para enviar logs ao CloudWatch.
 
@@ -131,11 +131,11 @@ Como a Lambda está em subnets privadas sem acesso à internet, ela precisa de u
 
 ---
 
-### Passo 5: Atualizar a Função Lambda
+## Passo 5: Atualizar a Função Lambda
 
 A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração de VPC, novas variáveis de ambiente e o código atualizado com a dependência `redis`.
 
-#### Configurar VPC na Lambda
+### Configurar VPC na Lambda
 
 1. Navegue para **Lambda** > função `dino-login-api`
 2. Vá para **Configuração** > **VPC**
@@ -148,7 +148,7 @@ A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração 
 
 > **⚠️ Atenção:** Após associar a Lambda a uma VPC privada, ela **perderá acesso à internet**. Isso significa que os endpoints públicos (como Cognito para validação de tokens) continuarão funcionando porque o API Gateway com Cognito Authorizer valida o token **antes** de invocar a Lambda. A Lambda em si não faz chamadas externas à internet.
 
-#### Atualizar variáveis de ambiente
+### Atualizar variáveis de ambiente
 
 6. Em **Configuração** > **Variáveis de ambiente**, clique em **Editar**
 7. Adicione as novas variáveis (mantendo `ALLOWED_ORIGINS` existente):
@@ -162,13 +162,13 @@ A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração 
 
 8. Clique em **Salvar**
 
-#### Atualizar permissões da Role da Lambda
+### Atualizar permissões da Role da Lambda
 
 9. Em **Configuração** > **Permissões**, clique na **Role de execução** (abre o IAM)
 10. Verifique que a role possui a política gerenciada **AWSLambdaVPCAccessExecutionRole** (necessária para criar ENIs na VPC)
     - Se não tiver, clique em **Adicionar permissões** > **Anexar políticas** > busque `AWSLambdaVPCAccessExecutionRole` > **Anexar**
 
-#### Deploy do novo código
+### Deploy do novo código
 
 11. No PowerShell, faça o build e empacotamento do backend atualizado:
     ```powershell
@@ -192,11 +192,11 @@ A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração 
 
 ---
 
-### Passo 6: Atualizar o API Gateway
+## Passo 6: Atualizar o API Gateway
 
 Adicionar os novos recursos e métodos para os endpoints do jogo.
 
-#### Criar recurso /game/start
+### Criar recurso /game/start
 
 1. Navegue para **API Gateway** > API `dino-login-api` > **Recursos**
 2. Selecione o recurso `/game` (já criado no Projeto 1)
@@ -205,7 +205,7 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
    - Marque **Habilitar CORS do API Gateway**
 4. Clique em **Criar recurso**
 
-#### Criar método POST para /game/start
+### Criar método POST para /game/start
 
 5. Com `/game/start` selecionado, clique em **Criar método**
 6. Configure:
@@ -217,14 +217,14 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
    - **Autorização**: selecione **dino-login-cognito-authorizer**
 8. Clique em **Criar método**
 
-#### Criar recurso /game/score
+### Criar recurso /game/score
 
 9. Selecione o recurso `/game` e clique em **Criar recurso**
    - **Nome do recurso**: `score`
    - Marque **Habilitar CORS do API Gateway**
 10. Clique em **Criar recurso**
 
-#### Criar método POST para /game/score
+### Criar método POST para /game/score
 
 11. Com `/game/score` selecionado, clique em **Criar método**
 12. Configure:
@@ -236,14 +236,14 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
     - **Autorização**: selecione **dino-login-cognito-authorizer**
 14. Clique em **Criar método**
 
-#### Criar recurso /game/ranking
+### Criar recurso /game/ranking
 
 15. Selecione o recurso `/game` e clique em **Criar recurso**
     - **Nome do recurso**: `ranking`
     - Marque **Habilitar CORS do API Gateway**
 16. Clique em **Criar recurso**
 
-#### Criar método GET para /game/ranking
+### Criar método GET para /game/ranking
 
 17. Com `/game/ranking` selecionado, clique em **Criar método**
 18. Configure:
@@ -255,14 +255,14 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
     - **Autorização**: selecione **dino-login-cognito-authorizer**
 20. Clique em **Criar método**
 
-#### Criar recurso /game/me
+### Criar recurso /game/me
 
 21. Selecione o recurso `/game` e clique em **Criar recurso**
     - **Nome do recurso**: `me`
     - Marque **Habilitar CORS do API Gateway**
 22. Clique em **Criar recurso**
 
-#### Criar método GET para /game/me
+### Criar método GET para /game/me
 
 23. Com `/game/me` selecionado, clique em **Criar método**
 24. Configure:
@@ -274,7 +274,7 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
     - **Autorização**: selecione **dino-login-cognito-authorizer**
 26. Clique em **Criar método**
 
-#### Atualizar CORS dos novos recursos
+### Atualizar CORS dos novos recursos
 
 27. Para cada novo recurso (`/game/start`, `/game/score`, `/game/ranking`, `/game/me`), caso o CORS não tenha sido configurado automaticamente:
     - Selecione o recurso
@@ -284,7 +284,7 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
     - Em **Access-Control-Allow-Origin**: `*`
     - Clique em **Salvar**
 
-#### Reimplantar a API
+### Reimplantar a API
 
 28. Clique em **Implantar API**
 29. Em **Estágio**, selecione o estágio existente **dev**
@@ -294,11 +294,11 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
 
 ---
 
-### Passo 7: Rebuild e Deploy do Frontend
+## Passo 7: Rebuild e Deploy do Frontend
 
 O frontend foi atualizado com a página do jogo e precisa ser recompilado e reenviado para o S3.
 
-#### Build do frontend
+### Build do frontend
 
 1. Abra o PowerShell e navegue para a raiz do projeto:
    ```powershell
@@ -325,7 +325,7 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
 
 4. Verifique que a pasta `dist/` foi gerada com sucesso (deve conter `index.html`, `assets/` e `vite.svg`)
 
-#### Upload para o S3
+### Upload para o S3
 
 5. Via Console AWS:
    - Navegue para o bucket S3 do frontend
@@ -339,7 +339,7 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
    aws s3 sync "C:\github\Amazon Elasticache\dist\" s3://SEU-BUCKET-NAME --delete
    ```
 
-#### Invalidar cache do CloudFront
+### Invalidar cache do CloudFront
 
 6. Invalide o cache para que as alterações sejam refletidas imediatamente:
 
@@ -361,7 +361,7 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
 
 ---
 
-### Verificação do Projeto 2
+## Verificação do Projeto 2
 
 Após completar todos os passos, verifique o funcionamento:
 
@@ -382,24 +382,4 @@ Após completar todos os passos, verifique o funcionamento:
    { "game": "online", "cache": "connected" }
    ```
 
-### Solução de Problemas — Projeto 2
 
-| Problema | Possível causa | Solução |
-|----------|---------------|---------|
-| Lambda timeout ao acessar cache | Security Group não permite conexão | Verifique que o SG da Lambda permite saída e o SG do ElastiCache permite entrada na porta 6379 do SG da Lambda |
-| Erro 503 nos endpoints do jogo | ElastiCache não acessível | Verifique endpoint, porta, TLS e que a Lambda está nas mesmas subnets |
-| Logs não aparecem no CloudWatch | VPC Endpoint de Logs não configurado ou SG sem regra de entrada HTTPS | Crie o VPC Endpoint para `com.amazonaws.us-east-1.logs` (Passo 4) e garanta que o SG tenha regra de entrada TCP 443 com origem no próprio SG |
-| Erro "Cannot find module 'redis'" | node_modules não incluído no ZIP | O ZIP da Lambda DEVE conter o `node_modules` no mesmo nível dos arquivos `.js`. Copie o `node_modules` para dentro do `dist/` antes de zipar |
-| Erro "Internal server error" no /health | ZIP com estrutura errada | Verifique que o `index.js` está na raiz do ZIP (não dentro de uma subpasta `dist/`) |
-| "Enabling private DNS requires enableDnsSupport and enableDnsHostnames" | DNS não habilitado na VPC | Em VPC > selecione a VPC > Ações > Editar configurações > Habilite resolução DNS e nomes de host DNS |
-| "CreateNetworkInterface" permission error | Role da Lambda sem permissão VPC | Anexe a política `AWSLambdaVPCAccessExecutionRole` à role de execução da Lambda |
-| "The operation cannot be performed at this time" | Atualização anterior em progresso | Aguarde 1-2 minutos para a atualização anterior finalizar e tente novamente |
-| Login falha com "Ocorreu um erro inesperado" | Arquivo `.env` ausente ou com valores incorretos | Crie o `.env` na raiz do projeto com VITE_COGNITO_USER_POOL_ID, VITE_COGNITO_USER_POOL_CLIENT_ID e VITE_API_URL corretos. Refaça o build e upload |
-| Erro "ECONNREFUSED" nos logs | Endpoint do cache incorreto | Confirme o valor da variável `CACHE_ENDPOINT` na Lambda |
-| Erro "CERT_UNTRUSTED" | TLS mal configurado | Confirme que `CACHE_TLS=true` e que está usando o endpoint correto |
-| Compress-Archive falha no PowerShell | Caminho com espaços não está entre aspas | Use aspas duplas em todos os paths: `"C:\github\Amazon Elasticache\backend\dist\*"` |
-| Lambda não cria ENI na VPC | Permissões insuficientes | Anexe a política `AWSLambdaVPCAccessExecutionRole` à role da Lambda |
-| Ranking vazio após jogar | Username não sendo salvo | Verifique se `POST /game/start` está chamando `setPlayerUsername` corretamente |
-| CORS error no POST | Método não permitido | Verifique que os recursos têm OPTIONS configurado e Allow-Methods inclui POST |
-
-> **⚠️ Custos contínuos:** Enquanto o ElastiCache Serverless estiver ativo (mesmo sem tráfego), haverá cobrança pelo armazenamento mínimo. Para ambientes de aprendizado/teste, **exclua o cache serverless** quando não estiver em uso e recrie quando precisar testar novamente. Os dados de ranking serão perdidos ao excluir, mas para um ambiente de estudo isso é aceitável.
