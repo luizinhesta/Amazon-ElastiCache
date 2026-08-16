@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-md);
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  width: 100%;
+  max-width: var(--max-width-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: var(--space-sm);
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-xl);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.email {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.input {
+  text-align: center;
+  font-size: var(--font-size-lg);
+  letter-spacing: 0.5em;
+  padding: var(--space-md);
+}
+
+.input::placeholder {
+  letter-spacing: normal;
+}
+
+.fieldError {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.confirmButton {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+.confirmButton:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.resendButton {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.resendButton:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  border-radius: var(--radius-md);
+  color: var(--color-success);
+  font-size: var(--font-size-sm);
+}
+
+.noEmailContainer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.noEmailMessage {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}
+
+.backLink {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.backLink:hover {
+  color: var(--color-primary-dark);
+}

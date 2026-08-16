@@ -1,0 +1,214 @@
+/* ============================================
+   DashboardPage - Área Autenticada
+   ============================================ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-md);
+  background: linear-gradient(
+    180deg,
+    var(--color-background) 0%,
+    var(--color-surface-alt) 100%
+  );
+}
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2xl);
+  width: 100%;
+  max-width: var(--max-width-sm);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.dinoIcon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.title {
+  text-align: center;
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-2xl);
+  margin: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background-color: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoValue {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.infoMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.infoMessage p {
+  margin: 0;
+}
+
+.infoIcon {
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.btnPrimary {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-primary);
+  color: white;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+              transform var(--transition-fast);
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background-color: var(--color-surface-alt);
+  transform: translateY(-1px);
+}
+
+.btnSecondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnDanger {
+  width: 100%;
+  padding: var(--space-md);
+  background-color: transparent;
+  color: var(--color-error);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: 2px solid var(--color-error);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast),
+              transform var(--transition-fast);
+  margin-top: var(--space-sm);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background-color: var(--color-error);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btnDanger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+/* ============================================
+   Responsivo
+   ============================================ */
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .dinoIcon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 480px) {
+  .infoItem {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .infoLabel {
+    min-width: 60px;
+  }
+}

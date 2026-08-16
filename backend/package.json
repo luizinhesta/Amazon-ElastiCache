@@ -1,0 +1,23 @@
+{
+  "name": "aws-cognito-backend",
+  "version": "1.0.0",
+  "description": "Lambda function backend for AWS Cognito custom login application",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "redis": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "fast-check": "^3.22.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

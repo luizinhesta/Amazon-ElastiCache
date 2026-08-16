@@ -1,0 +1,99 @@
+/* ============================================
+   Ranking - Top 10 Jogadores
+   ============================================ */
+
+.container {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  width: 100%;
+}
+
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.tableHeader th {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+.tableHeader th:last-child {
+  text-align: right;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background-color var(--transition-fast);
+}
+
+.tableRow:hover {
+  background-color: var(--color-surface-alt);
+}
+
+.tableRowHighlight {
+  background-color: rgba(74, 124, 79, 0.08);
+  border-left: 3px solid var(--color-primary);
+}
+
+.tableRowHighlight:hover {
+  background-color: rgba(74, 124, 79, 0.12);
+}
+
+.tableRow td {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+}
+
+.tableRow td:last-child {
+  text-align: right;
+  font-weight: var(--font-weight-semibold);
+}
+
+.position {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  min-width: 2rem;
+}
+
+.username {
+  color: var(--color-text);
+}
+
+.score {
+  color: var(--color-secondary-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: var(--space-lg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-lg);
+}

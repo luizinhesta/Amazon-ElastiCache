@@ -1,0 +1,81 @@
+/* ============================================
+   DinoGame Component Styles
+   ============================================ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.canvas {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: #fefefe;
+  cursor: pointer;
+  width: 100%;
+  height: auto;
+  max-width: 800px;
+  aspect-ratio: 800 / 200;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  background-color: rgba(253, 248, 240, 0.92);
+  border-radius: var(--radius-md);
+  z-index: 10;
+}
+
+.overlayTitle {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.overlayScore {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-light);
+}
+
+.startButton,
+.restartButton {
+  padding: var(--space-sm) var(--space-xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-surface);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.startButton:hover,
+.restartButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.startButton:active,
+.restartButton:active {
+  transform: scale(0.96);
+}
+
+.instructions {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
