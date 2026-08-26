@@ -1,6 +1,6 @@
 # 🎮 Dino Game — Amazon ElastiCache Serverless para Valkey - Parte 2-3
 
-![Objeto](./Imagens/capa.png)
+![Objeto](./imagens/capa.png)
 
 ## Descrição do Projeto
 
