@@ -1,12 +1,14 @@
 # 🎮 Dino Game — Amazon ElastiCache Serverless para Valkey - Parte 2-3
 
+![Objeto](./Imagens/capa.png)
+
 ## Descrição do Projeto
 
 Este é o **Projeto 2** de uma série de laboratórios práticos com serviços AWS. Ele adiciona um **jogo estilo dinossauro do Chrome** à aplicação de autenticação existente (Projeto 1), integrado com **Amazon ElastiCache Serverless para Valkey** como camada de cache de alta performance.
 
 O jogo funciona inteiramente no navegador (canvas HTML5), enquanto o backend gerencia sessões de jogo, ranking global e dados do jogador dentro de uma VPC privada.
 
-> **Pré-requisito:** Este projeto depende da infraestrutura do [Projeto 1 (Dino Login — Amazon Cognito)](https://github.com/seu-usuario/AWS-Cognito), que fornece toda a autenticação (Cognito), hospedagem (S3 + CloudFront) e API Gateway já configurados.
+> **Pré-requisito:** Este projeto depende da infraestrutura do [Projeto 1 (Dino Login — Amazon Cognito)](https://github.com/<SEU-USUARIO>/AWS-Cognito), que fornece toda a autenticação (Cognito), hospedagem (S3 + CloudFront) e API Gateway já configurados.
 
 ### Como o jogo funciona
 
@@ -18,6 +20,17 @@ O jogo funciona inteiramente no navegador (canvas HTML5), enquanto o backend ger
 - **Game over**: A partida termina quando o dinossauro colide com um obstáculo; a pontuação é enviada automaticamente ao backend
 
 A lógica do jogo é **100% local no navegador**, sem dependência de rede durante o gameplay. A comunicação com o backend acontece apenas no início e no fim de cada partida.
+
+<p align="center">
+  <img src="imagens/imagem%20(23).png" width="30%" />
+  <img src="imagens/imagem%20(3).png" width="30%" />
+  <img src="imagens/imagem%20(1).png" width="30%" />
+</p>
+<p align="center">
+  <img src="imagens/imagem%20(24).png" width="30%" />
+  <img src="imagens/imagem%20(25).png" width="30%" />
+  <img src="imagens/imagem%20(26).png" width="30%" />
+</p>
 
 ### Integração com ElastiCache Serverless para Valkey
 
@@ -49,6 +62,8 @@ ZREVRANK ranking:global <sub>
 ## Diagrama de Arquitetura
 
 ### Visão geral
+
+![Descrição da imagem](imagens/quadro00-arquitetura.png)
 
 A aplicação segue uma arquitetura **serverless** na AWS. O Projeto 2 adiciona uma VPC com subnets privadas onde a Lambda se conecta ao ElastiCache, mantendo toda a infraestrutura do Projeto 1 (Cognito, CloudFront, S3, API Gateway) inalterada.
 
@@ -152,6 +167,8 @@ graph LR
 | ElastiCache Serverless | Valkey, porta 6379, TLS obrigatório | Cache gerenciado sem nodes para provisionar |
 | VPC Endpoint | CloudWatch Logs (Interface) | Lambda envia logs sem necessidade de internet |
 
+![Descrição da imagem](<imagens/quadro07-resumo-final.png>)
+
 ---
 
 ## Benefícios da Arquitetura
@@ -166,6 +183,8 @@ graph LR
 | **Ranking em tempo real** | Sorted Sets garantem ordenação atômica sem processamento adicional |
 | **Jogo offline-first** | Lógica do jogo 100% no browser — resiliente a variações de rede |
 | **Evolução incremental** | Infraestrutura do Projeto 1 mantida intacta, apenas adicionando novos componentes |
+
+![Descrição da imagem](<imagens/quadro08-beneficios-arquitetura.png>)
 
 ---
 
@@ -182,6 +201,8 @@ graph LR
 | **Amazon Cognito** | Autenticação de usuários (herdado do Projeto 1) |
 | **Amazon S3 + CloudFront** | Hospedagem do frontend (herdado do Projeto 1) |
 
+![Descrição da imagem](<imagens/quadro06-recursos-utilizados.png>)
+
 ---
 
 ## Acesso dos Usuários
@@ -194,6 +215,8 @@ O acesso à aplicação segue este fluxo:
 4. Após login, o frontend recebe tokens JWT (ID Token, Access Token, Refresh Token)
 5. Todas as chamadas à API do jogo incluem o **ID Token** no header `Authorization`
 6. O **Cognito Authorizer** do API Gateway valida o token antes de repassar a requisição à Lambda
+
+![Descrição da imagem](<imagens/quadro01-cliente-frontend.png>)
 
 ---
 
@@ -261,6 +284,8 @@ Não há necessidade de configurar ALB/NLB — a arquitetura serverless com Lamb
 - **Stage:** dev
 - **Escalabilidade:** Gerenciada pela AWS — sem limite prático para este tipo de aplicação
 
+![Descrição da imagem](<imagens/quadro02-backend-serverless.png>)
+
 ---
 
 ## Fluxo do Processamento
@@ -309,6 +334,8 @@ sequenceDiagram
     APIGW-->>Browser: JSON Response
 ```
 
+![Descrição da imagem](<imagens/quadro05-fluxo-interacao.png>)
+
 ### Endpoints da API
 
 Todos os endpoints requerem autenticação (token JWT do Cognito no header `Authorization`).
@@ -349,6 +376,9 @@ Todos os endpoints requerem autenticação (token JWT do Cognito no header `Auth
 - **TLS obrigatório** em todas as conexões com o cache
 - **CORS restritivo** — apenas origens autorizadas
 - **Tokens com expiração** — ID Token válido por 1 hora, Refresh Token por 30 dias
+
+![Descrição da imagem](<imagens/quadro03-amazon-elasticache.png>)
+![Descrição da imagem](<imagens/quadro04-monitoramento-seguranca.png>)
 
 ---
 
@@ -401,6 +431,22 @@ Amazon-Elasticache/
 ---
 
 ## Como executar localmente
+
+### Variáveis de ambiente
+
+O projeto usa variáveis de ambiente para conectar aos serviços AWS. Copie o template e preencha:
+
+```bash
+cp .env.example .env
+```
+
+| Variável | Descrição | Onde encontrar |
+|----------|-----------|----------------|
+| `VITE_COGNITO_USER_POOL_ID` | ID do User Pool do Cognito | Console AWS > Cognito > User Pool > "ID do grupo de usuários" |
+| `VITE_COGNITO_USER_POOL_CLIENT_ID` | ID do App Client | Console AWS > Cognito > User Pool > Integração de aplicativos > "ID do cliente" |
+| `VITE_API_URL` | URL base da API Gateway (sem `/` final) | Console AWS > API Gateway > Estágios > dev > "Invocar URL" |
+
+> O `.env` está no `.gitignore` e **nunca deve ser commitado**. Cada ambiente deve criar o seu a partir do `.env.example`.
 
 ### Frontend (funciona sem AWS)
 

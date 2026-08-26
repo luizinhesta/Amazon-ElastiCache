@@ -46,6 +46,10 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
 > 4. Marque ✅ **Habilitar nomes de host DNS** (enableDnsHostnames)
 > 5. Salve
 
+![Descrição da imagem](<imagens/imagem%20(8).png>)
+![Descrição da imagem](<imagens/imagem%20(9).png>)
+![Descrição da imagem](<imagens/imagem%20(10).png>)
+
 ---
 
 ## Passo 2: Criar ElastiCache Serverless para Valkey
@@ -67,6 +71,12 @@ A Lambda precisa estar dentro de uma VPC para se comunicar com o ElastiCache (qu
    - A porta padrão é **6379**
 
 > **⚠️ Custos:** O ElastiCache Serverless cobra por uso (dados armazenados + ECPUs consumidas) enquanto o cache existir, mesmo sem tráfego. Se estiver usando apenas para aprendizado, **exclua o cache** após os testes para evitar cobranças contínuas. Consulte a [página de preços do ElastiCache](https://aws.amazon.com/elasticache/pricing/) para valores atualizados.
+
+![Descrição da imagem](<imagens/imagem%20(4).png>)
+![Descrição da imagem](<imagens/imagem%20(5).png>)
+![Descrição da imagem](<imagens/imagem%20(6).png>)
+![Descrição da imagem](<imagens/imagem%20(7).png>)
+
 
 ---
 
@@ -109,6 +119,8 @@ Precisamos de dois Security Groups: um para a Lambda e outro para o ElastiCache,
 
 > **Resumo da regra:** Lambda SG (saída) → ElastiCache SG (entrada na porta 6379). Isso garante que apenas a Lambda consiga se conectar ao cache.
 
+![Descrição da imagem](<imagens/imagem%20(2).png>)
+
 ---
 
 ## Passo 4: Criar VPC Endpoint para CloudWatch Logs
@@ -129,11 +141,17 @@ Como a Lambda está em subnets privadas sem acesso à internet, ela precisa de u
 
 > **Dica:** Sem esse endpoint, a Lambda não conseguirá enviar logs para o CloudWatch e os logs de erro do cache serão perdidos. Se preferir, você também pode criar um endpoint para `com.amazonaws.us-east-1.monitoring` (CloudWatch Metrics), mas o de Logs é o essencial.
 
+![Descrição da imagem](<imagens/imagem%20(13).png>)
+
 ---
 
 ## Passo 5: Atualizar a Função Lambda
 
 A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração de VPC, novas variáveis de ambiente e o código atualizado com a dependência `redis`.
+
+![Descrição da imagem](<imagens/imagem%20(14).png>)
+![Descrição da imagem](<imagens/imagem%20(15).png>)
+
 
 ### Configurar VPC na Lambda
 
@@ -155,12 +173,14 @@ A Lambda existente (`dino-login-api`) precisa ser atualizada com configuração 
 
    | Chave | Valor | Descrição |
    |-------|-------|-----------|
-   | `CACHE_ENDPOINT` | `dino-game-cache-xxxxxx.serverless.use1.cache.amazonaws.com` | Endpoint do ElastiCache (copiado no Passo 2) |
+   | `CACHE_ENDPOINT` | `<SEU-CACHE-ENDPOINT>` | Endpoint do ElastiCache (copiado no Passo 2, formato: `nome-cache-xxxxxx.serverless.use1.cache.amazonaws.com`) |
    | `CACHE_PORT` | `6379` | Porta do ElastiCache |
    | `CACHE_TLS` | `true` | Habilitar TLS (obrigatório para Serverless) |
    | `GAME_SESSION_TTL` | `1800` | TTL da sessão de jogo em segundos (30 min) |
 
 8. Clique em **Salvar**
+
+![Descrição da imagem](<imagens/imagem%20(16).png>)
 
 ### Atualizar permissões da Role da Lambda
 
@@ -204,6 +224,8 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
    - **Nome do recurso**: `start`
    - Marque **Habilitar CORS do API Gateway**
 4. Clique em **Criar recurso**
+
+![Descrição da imagem](<imagens/imagem%20(17).png>)
 
 ### Criar método POST para /game/start
 
@@ -274,6 +296,8 @@ Adicionar os novos recursos e métodos para os endpoints do jogo.
     - **Autorização**: selecione **dino-login-cognito-authorizer**
 26. Clique em **Criar método**
 
+![Descrição da imagem](<imagens/imagem%20(18).png>)
+
 ### Atualizar CORS dos novos recursos
 
 27. Para cada novo recurso (`/game/start`, `/game/score`, `/game/ranking`, `/game/me`), caso o CORS não tenha sido configurado automaticamente:
@@ -305,15 +329,23 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
    cd "C:\github\Amazon Elasticache"
    ```
 
-2. **Verifique que o arquivo `.env` existe** na raiz do projeto com as variáveis do Cognito e API:
-   ```env
-   VITE_COGNITO_USER_POOL_ID=us-east-1_XXXXXXXX
-   VITE_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
-   VITE_API_URL=https://SEU-API-ID.execute-api.us-east-1.amazonaws.com/dev
+2. **Verifique que o arquivo `.env` existe** na raiz do projeto. Copie o template e preencha com seus valores:
+   ```powershell
+   cp .env.example .env
    ```
-   - **VITE_COGNITO_USER_POOL_ID**: Encontra em Cognito > seu User Pool > campo "ID do grupo de usuários"
-   - **VITE_COGNITO_USER_POOL_CLIENT_ID**: Encontra em Cognito > User Pool > Integração de aplicativos > Clientes de aplicativos > "ID do cliente"
-   - **VITE_API_URL**: URL base da API Gateway (sem barra final)
+
+   Variáveis necessárias:
+   ```env
+   VITE_COGNITO_USER_POOL_ID=<SEU-USER-POOL-ID>
+   VITE_COGNITO_USER_POOL_CLIENT_ID=<SEU-APP-CLIENT-ID>
+   VITE_API_URL=<SUA-API-URL>
+   ```
+
+   | Variável | Onde encontrar no Console AWS |
+   |----------|------------------------------|
+   | `VITE_COGNITO_USER_POOL_ID` | Cognito > seu User Pool > campo "ID do grupo de usuários" (formato: `us-east-1_XXXXXXXXX`) |
+   | `VITE_COGNITO_USER_POOL_CLIENT_ID` | Cognito > User Pool > Integração de aplicativos > Clientes de aplicativos > "ID do cliente" |
+   | `VITE_API_URL` | API Gateway > sua API > Estágios > dev > "Invocar URL" (sem barra final, formato: `https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev`) |
 
    > **⚠️ Importante:** Sem o arquivo `.env`, o frontend não conseguirá se comunicar com o Cognito nem com a API. O `.env` está no `.gitignore` e não é versionado — cada ambiente precisa criar o seu.
 
@@ -336,8 +368,9 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
 
    Ou via AWS CLI (PowerShell):
    ```powershell
-   aws s3 sync "C:\github\Amazon Elasticache\dist\" s3://SEU-BUCKET-NAME --delete
+   aws s3 sync "C:\github\Amazon Elasticache\dist\" s3://<SEU-BUCKET-S3> --delete
    ```
+![Descrição da imagem](<imagens/imagem%20(21).png>)
 
 ### Invalidar cache do CloudFront
 
@@ -352,12 +385,14 @@ O frontend foi atualizado com a página do jogo e precisa ser recompilado e reen
 
    Ou via AWS CLI (PowerShell):
    ```powershell
-   aws cloudfront create-invalidation --distribution-id SEU-DISTRIBUTION-ID --paths "/*"
+   aws cloudfront create-invalidation --distribution-id <SEU-DISTRIBUTION-ID> --paths "/*"
    ```
 
 6. Aguarde a invalidação ser concluída (status **Concluída**)
 
 7. Aguarde 1-2 minutos e teste o acesso à aplicação
+
+![Descrição da imagem](<imagens/imagem%20(12).png>)
 
 ---
 
@@ -375,7 +410,7 @@ Após completar todos os passos, verifique o funcionamento:
 5. Verifique o **ranking**: deve exibir os melhores jogadores
 6. Teste o endpoint de status:
    ```
-   https://SEU-API-ID.execute-api.us-east-1.amazonaws.com/dev/game/status
+   <SUA-API-URL>/game/status
    ```
    Deve retornar:
    ```json
